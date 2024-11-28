@@ -20,13 +20,13 @@ typedef uint8_t   hex_value;
 typedef hex_value RGBpixel[3];
 typedef hex_value RGBApixel[4];
 
-enum header_field_values {
-    BM = 0x424D, /* Windows 3.1x and later, this one will be used */
-    BA = 0x4241, /* OS/2 struct bmp array */
-    CI = 0x4349, /* OS/2 struct color icon */
-    CP = 0x4350, /* OS/2 const color pointer */
-    IC = 0x4943, /* OS/2 struct icon */
-    PT = 0x5054  /* OS/2 pointer */
+enum header_field_values { /* reversed, header field must be little-endian */
+    BM = 0x4D42, /* Windows 3.1x and later, this one will be used */
+    BA = 0x4142, /* OS/2 struct bmp array */
+    CI = 0x4943, /* OS/2 struct color icon */
+    CP = 0x5043, /* OS/2 const color pointer */
+    IC = 0x4349, /* OS/2 struct icon */
+    PT = 0x5450  /* OS/2 pointer */
 };
 
 enum compression_method {

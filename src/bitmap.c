@@ -1,5 +1,5 @@
 /* https://en.wikipedia.org/wiki/BMP_file_format */
-/* version 0.1.0 */
+/* version 0.1.1 */
 
 #include <stdio.h>
 #include <stdint.h>
@@ -141,15 +141,15 @@ void check_dib_header_option(str dib_header, int32_t *offset) {
 	void bmp_test_fill(FILE *img, uint32_t width, uint32_t height) {
 		if (fseek(img, test_offset, SEEK_SET) != 0)
 			return;
-		
-		// int color = 0x00ff0000;
-		// for (unsigned long long i = 0; i < width * height; i++)
+
 		RGBpixel color[] = {{0, 0, 0xff}, {0xff, 0xff, 0xff},
 							{0xff, 0, 0}, {0, 0xff, 0}};
 		hex_value nils[2] = {0, 0};
-		for (int i = 0; i < 4; i++) {
+
+		for (int i = 0; i < (test_width * test_height); i++) {
 			fwrite(&color[i], sizeof(RGBpixel), 1, img);
-			if (i % 2 == 0)
+
+			if (i % test_width == 1)
 				fwrite(nils, sizeof(nils), 1, img);
 
 		}

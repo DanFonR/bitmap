@@ -22,7 +22,7 @@ The next ```make``` will generate a test .bmp file.
 
 ## Issues
 
-- The test .bmp is generated incorrectly;  
+- ~~The test .bmp is generated incorrectly~~ (wrong [endianness](https://en.wikipedia.org/wiki/Endianness) in [```header_field_values```](./src/bitmap.h); Fixed in version 0.1.1);  
 - Non-DEBUG mode not fully implemented;  
 - Windows .exe not signed .  
 
