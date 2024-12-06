@@ -28,7 +28,7 @@ There *is* a Windows executable available as well, but it isn't signed.
 
 Example Mode supercedes the previous DEBUG Mode.  
 ```make``` generates the 2×2 [example 1 bitmap](https://upload.wikimedia.org/wikipedia/commons/e/e8/Bmp_format.svg).  
-In the future, it will also generate the 4×2 [example 2 bitmap]().  
+In the future, it will also generate the 4×2 [example 2 bitmap](https://en.m.wikipedia.org/wiki/BMP_file_format#Example_2).  
 
 ## Issues
 
