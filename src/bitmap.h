@@ -20,6 +20,14 @@ typedef uint8_t   hex_value;
 typedef hex_value RGBpixel[3];
 typedef hex_value RGBApixel[4];
 
+typedef struct {
+	str filename;
+	int32_t width;
+	int32_t height;
+	int16_t bpp;
+    int16_t mode;
+} basic_info;
+
 enum header_field_values { /* reversed, header field must be little-endian */
     BM = 0x4D42, /* Windows 3.1x and later, this one will be used */
     BA = 0x4142, /* OS/2 struct bmp array */
@@ -30,16 +38,16 @@ enum header_field_values { /* reversed, header field must be little-endian */
 };
 
 enum compression_method {
-    BI_RGB       =      0,  /* no compression, most common */
-    BI_RLE8      =      1,  /* run-length encoding, 8 bits per pixel */
-    BI_RLE4      =      2,  /* RLE, 4 bits per pixel */
-    BI_BITFIELDS =      3,  /* Huffman 1D */
-    BI_JPEG      =      4,  /* RLE, 24 bits per pixel, JPEG */
-    BI_PNG       =      5,  /* PNG */
+    BI_RGB            = 0,  /* no compression, most common */
+    BI_RLE8           = 1,  /* run-length encoding, 8 bits per pixel */
+    BI_RLE4           = 2,  /* RLE, 4 bits per pixel */
+    BI_BITFIELDS      = 3,  /* Huffman 1D */
+    BI_JPEG           = 4,  /* RLE, 24 bits per pixel, JPEG */
+    BI_PNG            = 5,  /* PNG */
     BI_ALPHABITFIELDS = 6,  /* RGBA bit field masks, only Windows CE */
-    BI_CMYK      =      11, /* only Windows Metafile CMYK */
-    BI_CMYKRLE8  =      12, /* same as above, RLE-8 */
-    BI_CMYKRLE4  =      13  /* same as above, RLE-4 */
+    BI_CMYK           = 11, /* only Windows Metafile CMYK */
+    BI_CMYKRLE8       = 12, /* same as above, RLE-8 */
+    BI_CMYKRLE4       = 13  /* same as above, RLE-4 */
 };
 
 enum halftoning_algorithms { /* P1 = parameter 1; P2 = parameter 2 */
@@ -49,11 +57,12 @@ enum halftoning_algorithms { /* P1 = parameter 1; P2 = parameter 2 */
     SUPER_CIRCLE    = 3      /* P1 = X, P2 = Y: halftoning pattern */
 };
 
+
 #pragma pack(1)
 /* this header identifies the file as bitmap */
 typedef struct {
 	int16_t header_type; /* generally BM for Windows NT and others */
-	int32_t file_size;   /* 14 bytes + DIB header size */
+	int32_t file_size;   /* 14 bytes + DIB header size + pixel data */
 	int16_t reserved[2]; /* 2 reserved spaces, both 0 if created manually */
 	int32_t offset;      /* where pixels are */
 } BMPFileHeader;
@@ -64,11 +73,11 @@ typedef struct {
 #pragma pack(1)
 /* Windows 2.x version, bare-bones */
 typedef struct {
-    int32_t  header_size;  /* 12 bytes */
-    int16_t  bmp_width;
-    int16_t  bmp_height;
-    int16_t  color_planes; /* must be 1 */
-    int16_t  bits_per_pixel;
+    int32_t  header_size;    /* 12 bytes */
+    int16_t  bmp_width;      /* image width in pixels */
+    int16_t  bmp_height;     /* image width in pixels */
+    int16_t  color_planes;   /* must be 1 */
+    int16_t  bits_per_pixel; /* normally 1, 4, 8, 16, 24, or 32 */
 } BITMAPCOREHEADER;
 #pragma pack(0)
 
@@ -78,7 +87,7 @@ typedef struct {
 	int32_t  bmp_width;             /* image width in pixels */
 	int32_t  bmp_height;            /* image width in pixels */
 	uint16_t color_planes;          /* must be 1 */
-	uint16_t bits_per_pixel;        /* normally 2^0 through 2^5 */
+	uint16_t bits_per_pixel;        /* normally 1, 4, 8, 16, 24, or 32 */
 	uint32_t compression_method;    /* BI_RGB for no compression */
 	uint32_t img_size;              /* can be 0 for BI_RGB */
 	int32_t  horizontal_resolution; /* in pixels per meter (ppm) */

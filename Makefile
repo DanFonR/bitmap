@@ -2,9 +2,10 @@ CC 	  ?= clang
 SOURCE = ./src/bitmap.c ./src/bitmap.h
 ARGS   = -O3 -Wno-pragma-pack
 
-bitmap_test.bmp : bitmap-gen
-	@ ./$^ $@
-	@ echo "image generated"
+examples : bitmap-gen
+	@ ./$^ --example 1
+	@ # @ ./$^ --example 2
+	@ echo "example image generated"
 	@ rm $^
 	@ echo "executable deleted"
 
