@@ -1,10 +1,10 @@
-/* #pragma pack(1) to disable padding, required for some structs */
-
 #ifndef _BITMAP_H
 
 #define _BITMAP_H
 
 #include <stdint.h>
+
+#define FILENAME_SIZE 128
 
 #define FILE_OFFSET(dib_header)  sizeof(BMPFileHeader) + sizeof(dib_header)
 #define DEFAULT_RESOLUTION_UNIT  0 /* pixels per meter (OS22XBITMAPHEADER) */
@@ -15,17 +15,22 @@
 #define DEFAULT_FILL_DIRECTION   0 /* from lower-left corner to upper-right */
 #define DEFAULT_COLOR_ENCODING   0 /* for RGB */
 
-typedef char *    str;
+/* string types */
+
+typedef char      file_name[FILENAME_SIZE];
+typedef char      dib_header[9];   /* longest option is 8 chars + 1 null char */
+typedef char *    help_string;
+
 typedef uint8_t   hex_value;
-typedef hex_value RGBpixel[3];
-typedef hex_value RGBApixel[4];
+typedef hex_value RGBpixel[3];     /* written as BGR */
+typedef hex_value RGBApixel[4];    /* written as ABGR */
 
 typedef struct {
-	str filename;
-	int32_t width;
-	int32_t height;
-	int16_t bpp;
-    int16_t mode;
+	file_name filename;
+	int32_t   width;
+	int32_t   height;
+	int16_t   bpp;
+    int16_t   mode;
 } basic_info;
 
 enum header_field_values { /* reversed, header field must be little-endian */
@@ -57,6 +62,7 @@ enum halftoning_algorithms { /* P1 = parameter 1; P2 = parameter 2 */
     SUPER_CIRCLE    = 3      /* P1 = X, P2 = Y: halftoning pattern */
 };
 
+/* #pragma pack(1) to disable padding, required for some structs */
 
 #pragma pack(1)
 /* this header identifies the file as bitmap */

@@ -26,17 +26,18 @@ There *is* a Windows executable available as well, but it isn't signed.
 
 ### Example Mode
 
-Example Mode supercedes the previous DEBUG Mode.  
+Example Mode supersedes the previous DEBUG Mode.  
 ```make``` generates the 2×2 [example 1 bitmap](https://upload.wikimedia.org/wikipedia/commons/e/e8/Bmp_format.svg).  
-In the future, it will also generate the 4×2 [example 2 bitmap]().  
+In the future, it will also generate the 4×2 [example 2 bitmap](https://upload.wikimedia.org/wikipedia/commons/thumb/3/36/Bmp_format2.svg/390px-Bmp_format2.svg.png).  
 
 ## Issues
 
 - ~~The test .bmp is generated incorrectly~~ (Fixed in version 0.1.1: Wrong [endianness](https://en.wikipedia.org/wiki/Endianness) in [```header_field_values```](./src/bitmap.h));  
-- ~~Non-DEBUG mode not fully implemented~~ (Changed in version 0.2.0: Superceded by Example Mode);  
+- ~~Non-DEBUG mode not fully implemented~~ (Changed in version 0.2.0: Superseded by Example Mode);  
 - Example Mode not fully implemented;  
 - Basic and Advanced Modes not fully implemented;  
-- Windows .exe not signed .  
+- Windows .exe not signed;  
+- Windows .exe now not working (for now has been removed).  
 
 ## License
 

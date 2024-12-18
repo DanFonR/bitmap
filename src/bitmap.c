@@ -1,5 +1,5 @@
 /* https://en.wikipedia.org/wiki/BMP_file_format */
-/* version 0.2.0 */
+/* version 0.2.1 */
 
 #include <stdio.h>
 #include <stdint.h>
@@ -22,10 +22,10 @@ void bmp_example2_fill(FILE *img, basic_info base);
 
 /* creates bitmap file with headers */
 FILE *bmp_init(basic_info base,
-			   int32_t header_field, str dib_header_type);
+			   int32_t header_field, dib_header dib_header_option);
 
 /* if DIB header option is valid, insert proper BMPFileHeader offset */
-void check_dib_header_option(str dib_header, int32_t *offset);
+void check_dib_header_option(dib_header dib_header_option, int32_t *offset);
 
 void check_main_args(int argc, char *argv[], basic_info *base);
 
@@ -58,7 +58,7 @@ int main(int argc, char *argv[]) {
 
 	if (scanf("%d %d", &width, &height) != 2) {
 		fprintf(stderr, "1 or more invalid inputs\n");
-		exit(1);
+		exit(EXIT_FAILURE);
 	}
 
 	printf("insert bits per pixel (1, 4, 8, 16, 24 (default), or 32): ");
@@ -76,7 +76,7 @@ int main(int argc, char *argv[]) {
 			break;
 		default:
 			fprintf(stderr, "invalid number of bits\n");
-			exit(1);
+			exit(EXIT_FAILURE);
 	}
 */
 	fclose(bmp);
@@ -85,10 +85,10 @@ int main(int argc, char *argv[]) {
 }
 
 FILE *bmp_init(basic_info base,
-			   int32_t header_field, str dib_header_type) {
+			   int32_t header_field, dib_header dib_header_option) {
 	int32_t offset;
 
-	check_dib_header_option(dib_header_type, &offset);
+	check_dib_header_option(dib_header_option, &offset);
 
 	FILE *img = fopen(base.filename, "wb");
 
@@ -124,83 +124,100 @@ FILE *bmp_init(basic_info base,
 	return img;
 }
 
-void check_dib_header_option(str dib_header, int32_t *offset) {
-	if (!strcmp(dib_header, "default"))
+void check_dib_header_option(dib_header dib_header_option, int32_t *offset) {
+	size_t length = strlen(dib_header_option);
+
+	if (!strncmp(dib_header_option, "default", length))
 		*offset = FILE_OFFSET(BITMAPINFOHEADER);
-	else if (!strcmp(dib_header, "core"))
+	else if (!strncmp(dib_header_option, "core", length))
 		*offset = FILE_OFFSET(BITMAPCOREHEADER);
-	else if (!strcmp(dib_header, "os22x"))
+	else if (!strncmp(dib_header_option, "os22x", length))
 		*offset = FILE_OFFSET(OS22XBITMAPHEADER);
 	/*
-	else if (!strcmp(dib_header, "os22xvar"))
+	else if (!strncmp(dib_header, "os22xvar", length))
 		*offset = FILE_OFFSET(OS22XBITMAPHEADER);
-	else if (!strcmp(dib_header, "v2"))
+	else if (!strncmp(dib_header, "v2", length))
 		*offset = FILE_OFFSET(BITMAPV2INFOHEADER);
-	else if (!strcmp(dib_header, "v3"))
+	else if (!strncmp(dib_header, "v3", length))
 		*offset = FILE_OFFSET(BITMAPV3INFOHEADER);
-	else if (!strcmp(dib_header, "v4"))
+	else if (!strncmp(dib_header, "v4", length))
 		*offset = FILE_OFFSET(BITMAPV4HEADER);
-	else if (!strcmp(dib_header, "v5"))
+	else if (!strncmp(dib_header, "v5", length))
 		*offset = FILE_OFFSET(BITMAPV5HEADER);
 	*/
 	else {
 		fprintf(stderr, "invalid option\n");
-		exit(1);
+		exit(EXIT_FAILURE);
 	}
 }
 
 void check_main_args(int argc, char *argv[], basic_info *base) {
-	if (argc == 3 && !strcmp(argv[1], "--example")) { /* example is done */
+	if (argc == 3 && !(strcmp(argv[1], "--example") /* example is done */
+					   && strcmp(argv[1], "-e"))) {
 		if (atoi(argv[2]) == 1) {
-			base->filename = "example1.bmp";
+			strncpy(base->filename, "example1.bmp", FILENAME_SIZE);
+
 			base->width    = 2;
 			base->height   = 2;
 			base->bpp 	   = 24;
 			base->mode = EXAMPLE1_MODE;
 		}
 		else if (atoi(argv[2]) == 2) {
-			base->filename = "example2.bmp";
+			strncpy(base->filename, "example2.bmp", FILENAME_SIZE);
+
 			base->width	   = 4;
 			base->height   = 2;
 			base->bpp      = 32;
 			base->mode = EXAMPLE2_MODE;
 		}
 		else {
-			show_help();
-			exit(1);
+			fprintf(stderr,
+				    "invalid options\n use options \"1\" or \"2\""
+					" for example images");
+			exit(EXIT_FAILURE);
 		}
 	}
-	else if ((argc == 2 && !strcmp(argv[1], "--basic")) || argc == 1)
+	else if ((argc == 2 && !(strncmp(argv[1], "--basic", 7)
+							 && strncmp(argv[1], "-b", 2))) || argc == 1)
 		base->mode = BASIC_MODE;
-	else if (argc == 2 && !strcmp(argv[1], "--advanced"))
+	else if (argc == 2 && !(strncmp(argv[1], "--advanced", 10)
+							&& strncmp(argv[1], "-a", 2)))
 		base->mode = ADVANCED_MODE;
-	else {
+	else if (argc == 2 && !(strncmp(argv[1], "--help", 6)
+							&& strncmp(argv[1], "-h", 2))) {
 		show_help();
-		exit(1);
+		exit(EXIT_SUCCESS);
+	}
+	else {
+		fprintf(stderr, "invalid argument\n use \"--help\" or \"-h\"");
+		exit(EXIT_FAILURE);
 	}
 }
 
 void show_help() { /* done */
-	str title    = "BMP File Format Study";
-	str args     = "arguments: --basic (default), --example, --advanced";
-	str basic    = "--basic: basic functionalities only (patterns, size)";
-	str example  = "--example NUM (1 or 2, only): presets from Wikipedia";
-	str advanced = "--advanced: full freedom";
+	help_string title    = "BMP File Format Study";
+	help_string args     = "arguments: --example/-e (default),"
+				   		   " --basic/-b, --advanced/-a, --help/-h";
+	help_string basic    = "--basic/-b: basic functionalities only (patterns, size)";
+	help_string example  = "--example/-e: NUM (1 or 2, only): presets from Wikipedia";
+	help_string advanced = "--advanced/-a: full freedom";
+	help_string help 	 = "--help/-h: shows this help";
 
-	fprintf(stderr, "%s\n%s\n%s\n%s\n%s\n",
-			title, args, basic, example, advanced);
+	fprintf(stderr, "%s\n%s\n%s\n%s\n%s\n%s\n",
+			title, args, basic,
+			example, advanced, help);
 }
 
 void bmp_example1_fill(FILE *img, basic_info base) { /* done */
 	RGBpixel color[] = {{0, 0, 0xff}, {0xff, 0xff, 0xff},
 						{0xff, 0, 0}, {0, 0xff, 0}};
-	hex_value nils[2] = {0, 0};
+	hex_value padding[2] = {0, 0};
 
 	for (int i = 0; i < (base.width * base.height); i++) {
 		fwrite(&color[i], sizeof(RGBpixel), 1, img);
 
 		if (i % base.width == 1)
-			fwrite(nils, sizeof(nils), 1, img);
+			fwrite(padding, sizeof(padding), 1, img);
 
 	}
 }
