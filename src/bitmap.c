@@ -1,5 +1,5 @@
 /* https://en.wikipedia.org/wiki/BMP_file_format */
-/* version 0.2.1 */
+/* version 0.3.0 */
 
 #include <stdio.h>
 #include <stdint.h>
@@ -8,17 +8,21 @@
 #include "bitmap.h"
 
 enum basic_info_modes {
-	EXAMPLE1_MODE = 'E',
-	EXAMPLE2_MODE = 'e',
+	EXAMPLE1_MODE = '1',
+	EXAMPLE2_MODE = '2',
+	EXAMPLE3_MODE = '3',
 	BASIC_MODE 	 = 'B',
 	ADVANCED_MODE = 'A'
 };
 
 /* Example 1 From Wikipedia */
-void bmp_example1_fill(FILE *img, basic_info base);
+void bmp_example1(FILE *img, basic_info base);
 
 /* Example 2 From Wikipedia */
-void bmp_example2_fill(FILE *img, basic_info base);
+void bmp_example2(FILE *img, basic_info base);
+
+/* Example 3 by Hamid Naderi Yeganeh */
+void bmp_example3(FILE *img, basic_info base);
 
 /* creates bitmap file with headers */
 FILE *bmp_init(basic_info base,
@@ -45,14 +49,18 @@ int main(int argc, char *argv[]) {
 
 	if (base.mode == EXAMPLE1_MODE) {
 		bmp = bmp_init(base, BM, "default");
-		bmp_example1_fill(bmp, base);
+		bmp_example1(bmp, base);
 	}
 	/*
 	else if (base.mode == EXAMPLE2_MODE) {
 		bmp = bmp_init(base, BM, "v4");
-		bmp_test_fill(bmp, base);
+		bmp_example2(bmp, base);
 	}
 	*/
+	else if (base.mode == EXAMPLE3_MODE) {
+		bmp = bmp_init(base, BM, "default");
+		bmp_example3(bmp, base);
+	}
 /*
 	printf("insert bitmap dimensions (W x H): ");
 
@@ -155,25 +163,43 @@ void check_main_args(int argc, char *argv[], basic_info *base) {
 	if (argc == 3 && !(strcmp(argv[1], "--example") /* example is done */
 					   && strcmp(argv[1], "-e"))) {
 		if (atoi(argv[2]) == 1) {
-			strncpy(base->filename, "example1.bmp", FILENAME_SIZE);
+			strncpy(base->filename, "example1.bmp", 12);
 
 			base->width    = 2;
 			base->height   = 2;
 			base->bpp 	   = 24;
-			base->mode = EXAMPLE1_MODE;
+			base->mode 	   = EXAMPLE1_MODE;
 		}
 		else if (atoi(argv[2]) == 2) {
-			strncpy(base->filename, "example2.bmp", FILENAME_SIZE);
+			strncpy(base->filename, "example2.bmp", 12);
 
 			base->width	   = 4;
 			base->height   = 2;
 			base->bpp      = 32;
-			base->mode = EXAMPLE2_MODE;
+			base->mode 	   = EXAMPLE2_MODE;
+		}
+		else if (atoi(argv[2]) == 3) {
+			char c;
+
+			fprintf(stderr, "are you sure? "
+						    "it will take literal days to generate [y/N] ");
+
+			if ((c = getchar()) == 'n' || c == 'N') {
+				fprintf(stderr, "ok. exiting...");
+				exit(0);
+			}
+
+			strncpy(base->filename, "example3.bmp", 12);
+
+			base->width	   = 2100;
+			base->height   = 1200;
+			base->bpp      = 24;
+			base->mode 	   = EXAMPLE3_MODE;
 		}
 		else {
 			fprintf(stderr,
-				    "invalid options\n use options \"1\" or \"2\""
-					" for example images");
+				    "invalid options\n use options \"1\", \"2\""
+					" or \"3\" for example images");
 			exit(EXIT_FAILURE);
 		}
 	}
@@ -208,7 +234,7 @@ void show_help() { /* done */
 			example, advanced, help);
 }
 
-void bmp_example1_fill(FILE *img, basic_info base) { /* done */
+void bmp_example1(FILE *img, basic_info base) { /* done */
 	RGBpixel color[] = {{0, 0, 0xff}, {0xff, 0xff, 0xff},
 						{0xff, 0, 0}, {0, 0xff, 0}};
 	hex_value padding[2] = {0, 0};
@@ -222,6 +248,34 @@ void bmp_example1_fill(FILE *img, basic_info base) { /* done */
 	}
 }
 
-void bmp_example2_fill(FILE *img, basic_info base) {
+void bmp_example2(FILE *img, basic_info base) {
 	/* to do */
+}
+
+void bmp_example3(FILE *img, basic_info base) {
+
+	RGBpixel  yeganeh[YEGANEH_HEIGHT][YEGANEH_WIDTH];
+	hex_value padding[4] = {0, 0, 0, 0};
+	double    progress   = 0.0;
+
+	for (int n = 0; n < base.height; n++) {
+		for (int m = 0; m < base.width; m++) {
+			double x = (m + 1 - 970) / 652;
+			double y = (601 - (1200 - n)) / 652;
+
+			yeganeh[n][m][RGB_RED] 	 = F(H(0, x, y));
+			yeganeh[n][m][RGB_GREEN] = F(H(1, x, y));
+			yeganeh[n][m][RGB_BLUE]  = F(H(2, x, y));
+
+			fwrite(yeganeh[n][m], sizeof(RGBpixel), 1, img);
+
+			if (((n + 1) * (m + 1)) % 2520 == 0) {
+				progress += 0.1;
+				fprintf(stderr, "image %.1f%% done\n", progress);
+			}
+		}
+
+		fwrite(padding, sizeof(padding), 1, img);
+	}
+
 }

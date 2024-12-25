@@ -1,5 +1,5 @@
-CC 	  ?= clang
-SOURCE = ./src/bitmap.c ./src/bitmap.h
+CC 	   = clang
+SOURCE = ./src/bitmap.c ./src/bitmap.h ./src/colliding_planets/colliding_planets.c
 OUTPUT = bitmap-gen
 ARGS   = -O3 -Wno-pragma-pack
 
@@ -11,7 +11,7 @@ examples : exec
 	@ echo "executable deleted"
 
 exec : *.o
-	@ $(CC) $^ -o $(OUTPUT) $(ARGS) 
+	@ $(CC) $^ -o $(OUTPUT) $(ARGS) -lm
 	@ rm -f $^ *.pch ./src/$^ ./src/*.pch
 	@ echo "$(OUTPUT) generated"
 

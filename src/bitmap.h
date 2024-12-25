@@ -21,9 +21,24 @@ typedef char      file_name[FILENAME_SIZE];
 typedef char      dib_header[9];   /* longest option is 8 chars + 1 null char */
 typedef char *    help_string;
 
+/* pixels and colors */
+
 typedef uint8_t   hex_value;
 typedef hex_value RGBpixel[3];     /* written as BGR */
 typedef hex_value RGBApixel[4];    /* written as ABGR */
+
+enum RGBA_color_channels {
+    RGBA_ALPHA,
+    RGBA_BLUE,
+    RGBA_GREEN,
+    RGBA_RED
+};
+
+enum RGB_color_channels {
+    RGB_BLUE,
+    RGB_GREEN,
+    RGB_RED
+};
 
 typedef struct {
 	file_name filename;
@@ -32,6 +47,8 @@ typedef struct {
 	int16_t   bpp;
     int16_t   mode;
 } basic_info;
+
+/* bitmap file structure */
 
 enum header_field_values { /* reversed, header field must be little-endian */
     BM = 0x4D42, /* Windows 3.1x and later, this one will be used */
@@ -121,5 +138,13 @@ typedef struct {
  * typedef struct {} BITMAPV4HEADER        // color space type, gamma correct
  * typedef struct {} BITMAPV5HEADER        // ICC color profiles
 */
+
+/* for "Colliding Planets" */
+
+#define YEGANEH_WIDTH  2100
+#define YEGANEH_HEIGHT 1200
+
+hex_value F(double x);
+double    H(int v, double x, double y);
 
 #endif
