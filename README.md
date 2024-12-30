@@ -1,6 +1,6 @@
 # BMP File Format Study (*By DanFonR*)
 
-## Version 0.3.0
+## Version 0.3.1
 
 ## About
 
@@ -40,7 +40,7 @@ Example 3 is _Colliding Planets_, by [Hamid Naderi Yeganeh](https://en.wikipedia
 - Example Mode not fully implemented;  
 - Basic and Advanced Modes not fully implemented;  
 - Windows .exe not signed;  
-- ~~Windows .exe now not working (for now has been removed)~~ (Changed in version 0.3.0: Somehow working again).  
+- Windows .exe now not working (for now has been removed) (~~Changed in version 0.3.0: Somehow working again~~ Changed in version 0.3.1: example 3 not working).  
 
 ## License
 

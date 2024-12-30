@@ -1,5 +1,5 @@
 /* https://en.wikipedia.org/wiki/BMP_file_format */
-/* version 0.3.0 */
+/* version 0.3.1 */
 
 #include <stdio.h>
 #include <stdint.h>
@@ -160,10 +160,10 @@ void check_dib_header_option(dib_header dib_header_option, int32_t *offset) {
 }
 
 void check_main_args(int argc, char *argv[], basic_info *base) {
-	if (argc == 3 && !(strcmp(argv[1], "--example") /* example is done */
+	if (argc == 3 && !(strcmp(argv[1], "--example")
 					   && strcmp(argv[1], "-e"))) {
 		if (atoi(argv[2]) == 1) {
-			strncpy(base->filename, "example1.bmp", 12);
+			strcpy(base->filename, "example1.bmp");
 
 			base->width    = 2;
 			base->height   = 2;
@@ -171,7 +171,7 @@ void check_main_args(int argc, char *argv[], basic_info *base) {
 			base->mode 	   = EXAMPLE1_MODE;
 		}
 		else if (atoi(argv[2]) == 2) {
-			strncpy(base->filename, "example2.bmp", 12);
+			strcpy(base->filename, "example2.bmp");
 
 			base->width	   = 4;
 			base->height   = 2;
@@ -184,7 +184,7 @@ void check_main_args(int argc, char *argv[], basic_info *base) {
 			fprintf(stderr, "are you sure? "
 						    "it will take literal days to generate [y/N] ");
 
-			if ((c = getchar()) == 'n' || c == 'N') {
+			if ((c = getchar()) != 'y' || c != 'Y') {
 				fprintf(stderr, "ok. exiting...");
 				exit(0);
 			}
@@ -220,7 +220,7 @@ void check_main_args(int argc, char *argv[], basic_info *base) {
 	}
 }
 
-void show_help() { /* done */
+void show_help() {
 	help_string title    = "BMP File Format Study";
 	help_string args     = "arguments: --example/-e (default),"
 				   		   " --basic/-b, --advanced/-a, --help/-h";
@@ -234,7 +234,7 @@ void show_help() { /* done */
 			example, advanced, help);
 }
 
-void bmp_example1(FILE *img, basic_info base) { /* done */
+void bmp_example1(FILE *img, basic_info base) {
 	RGBpixel color[] = {{0, 0, 0xff}, {0xff, 0xff, 0xff},
 						{0xff, 0, 0}, {0, 0xff, 0}};
 	hex_value padding[2] = {0, 0};
