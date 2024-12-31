@@ -1,5 +1,6 @@
 CC 	   = clang
-SOURCE = ./src/bitmap.c ./src/bitmap.h ./src/colliding_planets/colliding_planets.c
+SOURCE = ./src/bitmap.c ./src/bitmap.h \
+		 ./src/colliding_planets/colliding_planets.c
 OUTPUT = bitmap-gen
 ARGS   = -O3 -Wno-pragma-pack
 
@@ -20,5 +21,5 @@ exec : *.o
 	@ $(CC) $^ -c $(ARGS)
 
 clean :
-	@ rm -f bitmap-gen example1.bmp example2.bmp bitmap.o
+	@ rm -f bitmap-gen example1.bmp example2.bmp example3.bmp bitmap.o
 	@ echo "everything cleaned up"

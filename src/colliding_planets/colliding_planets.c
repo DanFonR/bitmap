@@ -15,68 +15,60 @@
 #endif
 
 static double Z(int s, double x, double y) {
-    return
-        0.1 * pow(25, s) * pow(26, -s) * 3
-      * cos(
-          pow(11, s) * pow(10, -s)
-          * (1 + cos(10 * s))
-          * (cos(2 * s * s) * x + sin(2 * s * s) * y + 2 * cos(17 * s))
-          + 3 * cos(
-                    pow(11, s) * pow(10, -s)
-                    * (cos(7 * s * s) * x + sin(7 * s * s) * y)
-                )
-          + 2 * cos(5 * s)
-        )
-      * cos(
-          pow(11, s) * pow(10, -s)
-          * (1 + cos(10 * s))
-          * (cos(2 * s * s) * y - sin(2 * s * s) * x + 2 * cos(15 * s))
-          + 3 * cos(
-                    pow(11, s) * pow(10, -s)
-                    * (cos(8 * s * s) * x + sin(8 * s * s) * y)
-                )
-          + 2 * cos(7 * s)
-      )
-    ;
-}
+  double pow_pow = pow(11, s) * pow(10, -s);
+  double pow_cos = pow_pow * (1 + cos(10 * s));
+  double cos2ss  = cos(2 * s * s);
+  double sin2ss  = sin(2 * s * s);
 
-static double N(double x, double y) {
-    return
-        (x + y / 4 + 0.2) * (x + y / 4 + 0.2)
-      + (y - x / 4 - 27 / 50) * (y - x / 4 - 27 / 50)
-    ;
-}
-
-static double M(double x, double y) {
-    return
-        (x + y / 4 - 7 / 20) * (x + y / 4 - 7 / 20)
-      + (y - x / 4 + 7 / 20) * (y - x / 4 + 7 / 20)
-    ;
-}
-
-static double L(int t, double x, double y) {
   return
-    sqrt(fabs(
-          7600 - 4000 * t
-        - ((100 * y - 100 * x + 65 - 1442 * t)
-        * (100 * y - 100 * x + 65 - 1442 * t))
-        )
+      0.1 * pow(25, s) * pow(26, -s) * 3
+    * cos(
+        pow_cos
+        * (cos2ss * x + sin2ss * y + 2 * cos(17 * s))
+        + 3 * cos(
+                  pow_pow
+                  * (cos(7 * s * s) * x + sin(7 * s * s) * y)
+              )
+        + 2 * cos(5 * s)
+      )
+    * cos(
+        pow_cos
+        * (cos2ss * y - sin2ss * x + 2 * cos(15 * s))
+        + 3 * cos(
+                  pow_pow
+                  * (cos(8 * s * s) * x + sin(8 * s * s) * y)
+              )
+        + 2 * cos(7 * s)
     )
-    / 100
   ;
 }
 
+static double N(double x, double y) {
+  double xy2  = x + y / 4 + 0.2;
+  double yx54 = y - x / 4 - 0.54;
+
+  return (xy2 * xy2) + (yx54 * yx54);
+}
+
+static double M(double x, double y) {
+  double xy35 = x + y / 4 - 0.35;
+  double yx35 = y - x / 4 + 0.35;
+  
+  return (xy35 * xy35) + (yx35 * yx35);
+}
+
+static double L(int t, double x, double y) {
+  double xyt = 100 * y - 100 * x + 65 - 1442 * t;
+
+  return sqrt(fabs(7600 - 4000 * t - (xyt * xyt))) / 100;
+}
+
 static double T(double x, double y) {
+  double yx35 = 100 * y - 25 * x + 35;
   return
     exp(
       2 - (5 * (100 * x + 25 * y - 35))
-        / (1 + sqrt(
-                  fabs(
-                    4000
-                  - (100 * y - 25 * x + 35) * (100 * y - 25 * x + 35)
-                  )
-               )
-          )
+        / (1 + sqrt(fabs(4000 - (yx35 * yx35))))
     )
   ;
 }
@@ -111,17 +103,19 @@ static double A(double x, double y) {
 }
 
 static double Q(double x, double y) {
+  double inverse_root_2 = pow(2, -0.5);
+
   return
     (
       A(x, y)
     * asin(
-        pow(2, -0.5) * A(x, y) * sqrt(fabs(2 - 5 * M(x, y)))
+        inverse_root_2 * A(x, y) * sqrt(fabs(2 - 5 * M(x, y)))
       )
     )
   + (
       B(x, y)
     * asin(
-        pow(2, -0.5) * B(x, y) * sqrt(fabs(2 - 5 * N(x, y)))
+        inverse_root_2 * B(x, y) * sqrt(fabs(2 - 5 * N(x, y)))
       )
     )
   ;
@@ -141,19 +135,16 @@ static double C(double x, double y) {
 }
 
 static double P(double x, double y) {
+  double xy = 1000 * x + 250 * y;
+  double yx = 1000 * y - 250 * x;
+
   return
   1.5 * (
           (
-            A(x, y) * sqrt(M(x, y)) * atan(
-                                        (1000 * y - 250 * x + 350)
-                                      / fabs(1000 * x + 250 * y - 350)
-                                      )
+            A(x, y) * sqrt(M(x, y)) * atan((yx + 350) / fabs(xy - 350))
           )
         + (
-            B(x, y) * sqrt(N(x, y)) * atan(
-                                        (1000 * y - 250 * x - 540)
-                                      / (1 + fabs(1000 * x + 250 * y + 200))
-                                      )
+            B(x, y) * sqrt(N(x, y)) * atan((yx - 540) / (1 + fabs(xy + 200)))
           )
         )
   ;
@@ -175,7 +166,10 @@ static double R(int s, double x, double y) {
 }
 
 static double U(int v, double u, double w, double t, double x, double y) {
-  double prod = 1;
+  double prod   = 1;
+  double ltxy   = L(t, x, y);
+  double exy    = E(x, y);
+  double signal = pow(-1, t);
 
   for (int s = 1; s <= 5; s++)
     prod *=
@@ -186,9 +180,9 @@ static double U(int v, double u, double w, double t, double x, double y) {
             cos(
               (16 + 2 * cos(2 * s)) 
               * (100 * (x + y + u))
-              / (1 + 100 * L(t, x, y))
+              / (1 + 100 * ltxy)
             + (1 + t)
-              * (fabs(x + y + u) - L(t, x, y))
+              * (fabs(x + y + u) - ltxy)
               * (
                   acos(
                     cos(
@@ -201,12 +195,12 @@ static double U(int v, double u, double w, double t, double x, double y) {
             + 4 * cos(27 * s)
             )
           - 3.01 
-          + E(x, y) / 25 + 0.3 * pow(y - x + w, 3) * pow(-1, t)
+          + exy / 25 + 0.3 * pow(y - x + w, 3) * signal
           - 4 / M_PI
             * atan(
-                -400 * pow(-1, t)
+                -400 * signal
                 * (
-                    y - x + w + (v - 5) / 475 * pow(-1, t)
+                    y - x + w + (v - 5) / 475 * signal
                   + cos(8 * s) / 5
                   + cos(7 * (x + y + u) + 3 * cos(14 * s)) / 5
                   )
@@ -221,19 +215,22 @@ static double U(int v, double u, double w, double t, double x, double y) {
 
 static double K(int v, double x, double y) {
   double sum = 0;
+  double axy = A(x, y) / 20;
+  double bxy = B(x, y) / 20;
+  double pxy = P(x, y);
+  double qxy = Q(x, y);
+  double exy = E(x, y);
 
   for (int s = 1; s <= 50; s++)
     sum +=
       3
     * (
-        (A(x, y) / 20) * ((5 - v) / 5 + 0.15 * cos((5 + v) * s))
-      + (B(x, y) / 20) * (
-                           (
-                              14 + 3 * v - v * v
-                            + 3 * cos((4 + 2 * v) * s)
-                           )
-                          / 20
-                         )
+        (axy) * ((5 - v) / 5 + 0.15 * cos((5 + v) * s))
+      + (bxy) * ((14 + 3 * v - v * v
+                + 3 * cos((4 + 2 * v) * s)
+                 )
+                 / 20
+                )
       )
     * exp(
         -exp(
@@ -241,7 +238,7 @@ static double K(int v, double x, double y) {
                   pow(
                     cos(
                       ((5 + 4 * s) / 5)
-                    * (cos(4 * s) * Q(x, y) + sin(4 * s) * P(x, y))
+                    * (cos(4 * s) * qxy + sin(4 * s) * pxy)
                     + 10 * sin(10 * s)
                     )
                     , 2
@@ -249,12 +246,12 @@ static double K(int v, double x, double y) {
                 * pow(
                     cos(
                       ((5 + 4 * s) / 5)
-                    * (sin(4 * s) * Q(x, y) - cos(4 * s) * P(x, y))
+                    * (sin(4 * s) * qxy - cos(4 * s) * pxy)
                     + 10 * sin(9 * s)
                     )
                     , 2
                   )
-                + (E(x, y) - 7) / 10
+                + (exy - 7) / 10
                 )
         )
       )
@@ -273,6 +270,12 @@ static double D(double x, double y) {
 }
 
 double H(int v, double x, double y) {
+  double axy        = A(x, y);
+  double bxy        = B(x, y);
+  double kvxy       = K(v, x, y);
+  double v103       = (10 - 3 * v) / 100;
+  double third_kvxy = 1.25 + kvxy / 3;
+
   return
     ((3 * v * v - 11 * v + 16) / 4)
     * (
@@ -281,27 +284,22 @@ double H(int v, double x, double y) {
         - U(100, -0.15, -0.7, 1, x, y)
         - 0.2 * U(5, -0.15, -0.7, 1, x, y)
         )
-        * B(x, y)
+        * bxy
       + (
           1.2
         - U(100, -0.17, 0.4, 0, x, y)
         - 0.2 * U(5, -0.17, 0.4, 0, x, y)
         )
-        * A(x,y)
+        * axy
       )
   + ((3 * v * v - 11 * v + 16) / 2) * C(x, y)
-  + A(x, y) * exp(-exp(500 * (y - x - 0.18)))
-    * (
-        ((10 - 3 * v) / 100)
-        * (1.25 + K(v, x, y) / 3)
-      + K(v, x, y) * exp(-T(x, y))
-      )
-  + B(x, y)
+  + axy * exp(-exp(500 * (y - x - 0.18)))
+    * ((v103 * third_kvxy) + kvxy * exp(-T(x, y)))
+  + bxy
     * exp(-exp(-500 * (y - x - 0.18)))
     * (
-        ((10 - 3 * v) / 100)
-        * (1.25 + K(v, x, y) / 3)
-      + K(v, x, y) * exp(-D(x, y) - exp(-20 * (y - x / 4 - 0.3)))
+        (v103 * third_kvxy)
+      + kvxy * exp(-D(x, y) - exp(-20 * (y - x / 4 - 0.3)))
       )
   ;
 }
@@ -328,5 +326,10 @@ hex_value F(double x) {
  * > this thing is incredibly hard to make readable
  * > the way i've rewritten the formulas is horrible
  * > but i think the original is much worse
+ * >
+ * > i tried to put some repeats in variables
+ * > to see if it helps when generating the image
+ * > the thing is even uglier than before
+ * > i really don't like it
  * ......................................................
 */

@@ -1,6 +1,6 @@
 # BMP File Format Study (*By DanFonR*)
 
-## Version 0.3.1
+## Version 0.3.2
 
 ## About
 
@@ -20,12 +20,6 @@ On Linux (or WSL), make sure ```make``` is installed. Then, in the terminal, use
 
 There *is* a Windows executable available as well, but it isn't signed.  
 
-### ~~DEBUG Mode~~
-
-~~The C file has a ```#define``` directive to turn **DEBUG** mode on or off. Comment it out to turn it off, uncomment to turn it on.~~  
-~~The next ```make``` will generate a test .bmp file.~~  
-~~**DEBUG** output should match [this image](https://upload.wikimedia.org/wikipedia/commons/e/e8/Bmp_format.svg).~~  
-
 ### Example Mode
 
 Example Mode supersedes the previous DEBUG Mode.  
@@ -35,12 +29,10 @@ Example 3 is _Colliding Planets_, by [Hamid Naderi Yeganeh](https://en.wikipedia
 
 ## Issues
 
-- ~~The test .bmp is generated incorrectly~~ (Fixed in version 0.1.1: Wrong [endianness](https://en.wikipedia.org/wiki/Endianness) in [```header_field_values```](./src/bitmap.h));  
-- ~~Non-DEBUG mode not fully implemented~~ (Changed in version 0.2.0: Superseded by Example Mode);  
+- Example 3 is generated incorrectly;  
 - Example Mode not fully implemented;  
 - Basic and Advanced Modes not fully implemented;  
-- Windows .exe not signed;  
-- Windows .exe now not working (for now has been removed) (~~Changed in version 0.3.0: Somehow working again~~ Changed in version 0.3.1: example 3 not working).  
+- Windows .exe not signed.    
 
 ## License
 

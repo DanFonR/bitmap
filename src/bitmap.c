@@ -1,11 +1,13 @@
 /* https://en.wikipedia.org/wiki/BMP_file_format */
-/* version 0.3.1 */
+/* version 0.3.2 */
 
 #include <stdio.h>
 #include <stdint.h>
 #include <stdlib.h>
 #include <string.h>
 #include "bitmap.h"
+
+#define ERASE_LINE(file) fprintf(file, "\x01b[2K\r") 
 
 enum basic_info_modes {
 	EXAMPLE1_MODE = '1',
@@ -184,12 +186,13 @@ void check_main_args(int argc, char *argv[], basic_info *base) {
 			fprintf(stderr, "are you sure? "
 						    "it will take literal days to generate [y/N] ");
 
-			if ((c = getchar()) != 'y' || c != 'Y') {
-				fprintf(stderr, "ok. exiting...");
+			if ((c = getchar()) != 'y' && c != 'Y') {
+				fprintf(stderr, "ok. exiting...\n");
 				exit(0);
 			}
 
-			strncpy(base->filename, "example3.bmp", 12);
+			fprintf(stderr, "starting image generation...\n\n");
+			strcpy(base->filename, "example3.bmp");
 
 			base->width	   = 2100;
 			base->height   = 1200;
@@ -256,7 +259,7 @@ void bmp_example3(FILE *img, basic_info base) {
 
 	RGBpixel  yeganeh[YEGANEH_HEIGHT][YEGANEH_WIDTH];
 	hex_value padding[4] = {0, 0, 0, 0};
-	double    progress   = 0.0;
+	float     progress   = 0.0F;
 
 	for (int n = 0; n < base.height; n++) {
 		for (int m = 0; m < base.width; m++) {
@@ -267,15 +270,18 @@ void bmp_example3(FILE *img, basic_info base) {
 			yeganeh[n][m][RGB_GREEN] = F(H(1, x, y));
 			yeganeh[n][m][RGB_BLUE]  = F(H(2, x, y));
 
-			fwrite(yeganeh[n][m], sizeof(RGBpixel), 1, img);
-
-			if (((n + 1) * (m + 1)) % 2520 == 0) {
-				progress += 0.1;
-				fprintf(stderr, "image %.1f%% done\n", progress);
-			}
 		}
 
+		fwrite(yeganeh[n], sizeof(RGBpixel), base.width, img);
 		fwrite(padding, sizeof(padding), 1, img);
+		
+		if (n % (base.height / 100) == 0) {
+			progress += 0.1F;
+
+			ERASE_LINE(stderr);
+			fprintf(stderr, "image %.1f%% done", progress);
+		}
 	}
 
+	fprintf(stderr, "\n");
 }
