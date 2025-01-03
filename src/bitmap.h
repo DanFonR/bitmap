@@ -9,16 +9,16 @@
 #define FILE_OFFSET(dib_header)  sizeof(BMPFileHeader) + sizeof(dib_header)
 #define DEFAULT_RESOLUTION_UNIT  0 /* pixels per meter (OS22XBITMAPHEADER) */
 #define COLOR_PLANES             1
+#define NONE                     0
 #define DEFAULT_COLOR_PALETTE    0 /* 2^n */
 #define DEFAULT_IMPORTANT_COLORS 0 /* all colors important */
-#define NONE                     0
 #define DEFAULT_FILL_DIRECTION   0 /* from lower-left corner to upper-right */
 #define DEFAULT_COLOR_ENCODING   0 /* for RGB */
 
 /* string types */
 
 typedef char      file_name[FILENAME_SIZE];
-typedef char      dib_header[9];   /* longest option is 8 chars + 1 null char */
+typedef char      dib_header[9];   /* longest option is 8 chars + null char */
 typedef char *    help_string;
 
 /* pixels and colors */
@@ -50,8 +50,9 @@ typedef struct {
 
 /* bitmap file structure */
 
-enum header_field_values { /* reversed, header field must be little-endian */
-    BM = 0x4D42, /* Windows 3.1x and later, this one will be used */
+/* chars here are reversed: header field must be little-endian */
+enum header_field_values {
+    BM = 0x4D42, /* Windows 3.1x and later (will be used for examples) */
     BA = 0x4142, /* OS/2 struct bmp array */
     CI = 0x4943, /* OS/2 struct color icon */
     CP = 0x5043, /* OS/2 const color pointer */
@@ -62,9 +63,9 @@ enum header_field_values { /* reversed, header field must be little-endian */
 enum compression_method {
     BI_RGB            = 0,  /* no compression, most common */
     BI_RLE8           = 1,  /* run-length encoding, 8 bits per pixel */
-    BI_RLE4           = 2,  /* RLE, 4 bits per pixel */
+    BI_RLE4           = 2,  /* RLE, 4 bpp */
     BI_BITFIELDS      = 3,  /* Huffman 1D */
-    BI_JPEG           = 4,  /* RLE, 24 bits per pixel, JPEG */
+    BI_JPEG           = 4,  /* RLE, 24 bpp, JPEG */
     BI_PNG            = 5,  /* PNG */
     BI_ALPHABITFIELDS = 6,  /* RGBA bit field masks, only Windows CE */
     BI_CMYK           = 11, /* only Windows Metafile CMYK */
@@ -72,11 +73,12 @@ enum compression_method {
     BI_CMYKRLE4       = 13  /* same as above, RLE-4 */
 };
 
-enum halftoning_algorithms { /* P1 = parameter 1; P2 = parameter 2 */
-    NO_HALFTONING   = NONE,  /* most common */
-    ERROR_DIFFUSION = 1,     /* P1: 0 ERR not diffused, 100 no ERR damping */
-    PANDA           = 2,     /* P1 = X, P2 = Y: halftoning pattern */
-    SUPER_CIRCLE    = 3      /* P1 = X, P2 = Y: halftoning pattern */
+/* P1 = parameter 1; P2 = parameter 2 */
+enum halftoning_algorithms {
+    NO_HALFTONING   = 0, /* most common */
+    ERROR_DIFFUSION = 1, /* P1: 0 error not diffused, 100 no error damping */
+    PANDA           = 2, /* P1 = X, P2 = Y: halftoning pattern */
+    SUPER_CIRCLE    = 3  /* P1 = X, P2 = Y: halftoning pattern */
 };
 
 /* #pragma pack(1) to disable padding, required for some structs */
@@ -97,8 +99,8 @@ typedef struct {
 /* Windows 2.x version, bare-bones */
 typedef struct {
     int32_t  header_size;    /* 12 bytes */
-    int16_t  bmp_width;      /* image width in pixels */
-    int16_t  bmp_height;     /* image width in pixels */
+    int16_t  bmp_width;      
+    int16_t  bmp_height;     
     int16_t  color_planes;   /* must be 1 */
     int16_t  bits_per_pixel; /* normally 1, 4, 8, 16, 24, or 32 */
 } BITMAPCOREHEADER;
@@ -107,14 +109,14 @@ typedef struct {
 /* most used header, common Windows format */
 typedef struct {
 	uint32_t header_size;           /* 40 bytes */
-	int32_t  bmp_width;             /* image width in pixels */
-	int32_t  bmp_height;            /* image width in pixels */
+	int32_t  bmp_width;             
+	int32_t  bmp_height;            
 	uint16_t color_planes;          /* must be 1 */
 	uint16_t bits_per_pixel;        /* normally 1, 4, 8, 16, 24, or 32 */
 	uint32_t compression_method;    /* BI_RGB for no compression */
 	uint32_t img_size;              /* can be 0 for BI_RGB */
 	int32_t  horizontal_resolution; /* in pixels per meter (ppm) */
-	int32_t  vertical_resolution;   /* in pixels per meter (ppm) */
+	int32_t  vertical_resolution;   
 	uint32_t num_colors;            /* number of colors in palette */
 	uint32_t important_colors;      /* 0 when every color is important */
 } BITMAPINFOHEADER;
@@ -123,10 +125,10 @@ typedef struct {
     BITMAPINFOHEADER bmpinfo;              /* same info as previous */
     uint16_t         resolution_unit;      /* only ppm is defined */
     uint16_t         padding;              /* ignored, should be 0 */
-    uint16_t         bit_fill_direction;   /* only lower-left is defined */
+    uint16_t         bit_fill_direction;   /* only default direction defined */
     uint16_t         halftoning;           /* algorithm for rendering image */
-    uint32_t         halftoning_params[2]; /* parameters for algorithm */
-    uint32_t         color_encoding;       /* only RGB is defined */
+    uint32_t         halftoning_params[2]; /* algorithm parameters */
+    uint32_t         color_encoding;       /* only RGB defined */
     uint32_t         identifier;           /* application defined */
 
 } OS22XBITMAPHEADER;
