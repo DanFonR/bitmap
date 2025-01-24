@@ -1,5 +1,5 @@
 /* https://en.wikipedia.org/wiki/BMP_file_format */
-/* version 0.3.3 */
+/* version 0.3.4 */
 
 #include <stdio.h>
 #include <stdint.h>
@@ -7,7 +7,7 @@
 #include <string.h>
 #include "bitmap.h"
 
-#define ERASE_LINE(file) fprintf(file, "\x01b[2K\r") 
+#define ERASE_LINE(file) fprintf(file, "\x01b[2K\r")
 
 enum basic_info_modes {
 	EXAMPLE1_MODE = '1',
@@ -263,13 +263,12 @@ void bmp_example3(FILE *img, basic_info base) {
 
 	for (int n = 0; n < base.height; n++) {
 		for (int m = 0; m < base.width; m++) {
-			double x = (m + 1 - 970) / 652;
-			double y = (601 - (1200 - n)) / 652;
+			double x = ((double)m + 1 - 970) / 652;
+			double y = (601 - (1200 - (double)n)) / 652;
 
 			yeganeh[n][m][RGB_RED] 	 = F(H(0, x, y));
 			yeganeh[n][m][RGB_GREEN] = F(H(1, x, y));
 			yeganeh[n][m][RGB_BLUE]  = F(H(2, x, y));
-
 		}
 
 		fwrite(yeganeh[n], sizeof(RGBpixel), base.width, img);
@@ -279,7 +278,7 @@ void bmp_example3(FILE *img, basic_info base) {
 			progress += 0.1F;
 
 			ERASE_LINE(stderr);
-			fprintf(stderr, "image %.1f%% done", progress);
+			fprintf(stderr, "image %.1f%% done; ", progress);
 		}
 	}
 

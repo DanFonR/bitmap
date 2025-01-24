@@ -1,2 +1,5 @@
 issues
 src/colliding_planets/reference.jpg
+*.bmp
+a.out
+*.txt

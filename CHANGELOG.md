@@ -49,8 +49,13 @@ From commit:
 > I tried to make the number crunching in colliding_planets.c a bit more efficient. The code is uglier now, but I think it helped. I also put the 2 fwrites together, so it will write the pixels once per line.  
 > Made the README more useful by removing the text in strikethrough. Will create a file for changes later on.
 
-## 0.3.3: Added CHANGLOG; Linux and Windows Binaries; Comments in bitmap.h
+## 0.3.3: Added CHANGELOG; Linux and Windows Binaries; Comments in bitmap.h
 
 Changelog added to register fixes (previously in README).  
 Windows and Linux binaries in bin folder.  
 Removed redundant comments in bitmap.h.
+
+## 0.3.4: Partial fix to image generation; Fixes to formulas in colliding_planets.c
+
+In loop, treated m and n as doubles when calculating x and y (otherwise, they become 0). Resulting image composed of bands of red, green, and blue, of varying intensities, rightmost parts rendered on the left side, and some distortion. Previous attempts were the RGB bands forming a diagonal strip (like a "/") in a black background.   
+In function "L", changed 1442 to 142; In "Q", stored calls to "A" and "B" in variables; In "P", added a "1 +" in the 1st atan; In "R", changed "* 0.4" to "+ 0.4"; Replaced instances of exp(-exp(...)) with E_POW_NEG_E_POW; Any doubles initialized with literals such as 0 now have leading ".0"; Created some new variables to store repeated values
