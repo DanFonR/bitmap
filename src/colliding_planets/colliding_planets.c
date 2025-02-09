@@ -16,7 +16,6 @@
 
 #define E_POW_NEG_E_POW(exponent) exp(-exp((exponent)))
 
-/* OK */
 static double Z(int s, double x, double y) {
   double pow_pow = pow(11, s) * pow(10, -s);
   double pow_cos = pow_pow * (1 + cos(10 * s));
@@ -46,7 +45,6 @@ static double Z(int s, double x, double y) {
   ;
 }
 
-/* OK */
 static double N(double x, double y) {
   double xy2  = x + y / 4 + 0.2;
   double yx54 = y - x / 4 - 0.54;
@@ -54,7 +52,6 @@ static double N(double x, double y) {
   return (xy2 * xy2) + (yx54 * yx54);
 }
 
-/* OK */
 static double M(double x, double y) {
   double xy35 = x + y / 4 - 0.35;
   double yx35 = y - x / 4 + 0.35;
@@ -62,14 +59,12 @@ static double M(double x, double y) {
   return (xy35 * xy35) + (yx35 * yx35);
 }
 
-/* OK */
 static double L(int t, double x, double y) {
   double xyt = 100 * y - 100 * x + 65 - 142 * t;
 
   return sqrt(fabs(7600 - 4000 * t - (xyt * xyt))) / 100;
 }
 
-/* OK */
 static double T(double x, double y) {
   double yx35 = 100 * y - 25 * x + 35;
   return
@@ -80,7 +75,6 @@ static double T(double x, double y) {
   ;
 }
 
-/* OK */
 static double E(double x, double y) {
   double sum = 0.0;
 
@@ -90,7 +84,6 @@ static double E(double x, double y) {
   return sum;
 }
 
-/* OK */
 static double B(double x, double y) {
   return
     E_POW_NEG_E_POW(
@@ -99,7 +92,6 @@ static double B(double x, double y) {
   ;  
 }
 
-/* OK */
 static double A(double x, double y) {
   return
     E_POW_NEG_E_POW(
@@ -108,7 +100,6 @@ static double A(double x, double y) {
   ;
 }
 
-/* OK */
 static double Q(double x, double y) {
   double inverse_root_2 = pow(2, -0.5);
   double axy = A(x, y), bxy = B(x, y);
@@ -129,7 +120,6 @@ static double Q(double x, double y) {
   ;
 }
 
-/* OK */ /* ind */
 static double C(double x, double y) {
   return
     E_POW_NEG_E_POW(
@@ -141,7 +131,6 @@ static double C(double x, double y) {
   ;
 }
 
-/* OK */ /* a, b*/
 static double P(double x, double y) {
   double xy = 1000 * x + 250 * y;
   double yx = 1000 * y - 250 * x;
@@ -158,7 +147,6 @@ static double P(double x, double y) {
   ;
 }
 
-/* OK */ /* ind */
 static double R(int s, double x, double y) {
   return
     acos(
@@ -174,7 +162,6 @@ static double R(int s, double x, double y) {
   ;
 }
 
-/* OK */
 static double U(int v, double u, double w, double t, double x, double y) {
   double prod = 1.0, ltxy = L(t, x, y), exy = E(x, y), signal = pow(-1, t);
 
@@ -218,7 +205,6 @@ static double U(int v, double u, double w, double t, double x, double y) {
   return prod;
 }
 
-/* OK */
 static double K(int v, double x, double y) {
   double sum = 0.0;
   double axy = A(x, y) / 20;
@@ -264,7 +250,6 @@ static double K(int v, double x, double y) {
   return sum;
 }
 
-/* OK */
 static double D(double x, double y) {
   return
     exp(
@@ -274,7 +259,6 @@ static double D(double x, double y) {
   ;
 }
 
-/* OK */
 double H(int v, double x, double y) {
   double axy   = A(x, y);
   double bxy   = B(x, y);
@@ -311,7 +295,6 @@ double H(int v, double x, double y) {
   ;
 }
 
-
 hex_value F(double x) {
     return
         floor(
@@ -340,13 +323,3 @@ hex_value F(double x) {
  * > i really don't like it
  * ......................................................
 */
-/*#include <stdio.h>
-int main() {
-  for (int n = 0; n < 1200; n++) {
-		for (int m = 0; m < 2100; m++) {
-			double x = ((double)m + 1 - 970) / 652;
-			double y = (601 - (1200 - (double)n)) / 652;
-      printf("m=%d, n=%d: x=%f, y=%f\n",m, n, x, y);
-    }
-  }
-}*/

@@ -1,6 +1,6 @@
 # BMP File Format Study (*By DanFonR*)
 
-## Version 0.3.3
+## Version 0.3.5
 
 ## About
 
@@ -25,11 +25,10 @@ There *is* a Windows executable available as well, but it isn't signed.
 Example Mode supersedes the previous DEBUG Mode.  
 ```make``` generates the 2×2 [example 1 bitmap](https://upload.wikimedia.org/wikipedia/commons/e/e8/Bmp_format.svg).  
 In the future, it will also generate the 4×2 [example 2 bitmap](https://upload.wikimedia.org/wikipedia/commons/thumb/3/36/Bmp_format2.svg/390px-Bmp_format2.svg.png).  
-Example 3 is _Colliding Planets_, by [Hamid Naderi Yeganeh](https://en.wikipedia.org/wiki/Hamid_Naderi_Yeganeh), taken from [his post on X/Twitter](https://x.com/naderi_yeganeh/status/1845760888512414061) (October 14, 2024). This one is **not** generated automatically by ```make```, as it is **very** computationally demanding, and would take hours/days for the image to be generated.  
+Example 3 is _Colliding Planets_, by [Hamid Naderi Yeganeh](https://en.wikipedia.org/wiki/Hamid_Naderi_Yeganeh), taken from [his post on X/Twitter](https://x.com/naderi_yeganeh/status/1845760888512414061) (October 14, 2024). This one is **not** generated automatically by ```make```, as it is **very** computationally demanding (it takes ~15 minutes for the image to be generated on an i5-12450H).  
 
 ## Issues
 
-- Example 3 is generated incorrectly;  
 - Example Mode not fully implemented;  
 - Basic and Advanced Modes not fully implemented;  
 - Windows .exe not signed.    

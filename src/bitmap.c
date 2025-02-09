@@ -1,5 +1,5 @@
 /* https://en.wikipedia.org/wiki/BMP_file_format */
-/* version 0.3.4 */
+/* version 0.3.5 */
 
 #include <stdio.h>
 #include <stdint.h>
@@ -43,7 +43,7 @@ int main(int argc, char *argv[]) {
 		.bpp 	  = 0,
 		.width 	  = 0,
 		.height   = 0,
-		.mode 	  = 0
+		.mode 	  = NONE
 	};
 	FILE *bmp;
 
@@ -184,7 +184,8 @@ void check_main_args(int argc, char *argv[], basic_info *base) {
 			char c;
 
 			fprintf(stderr, "are you sure? "
-						    "it will take literal days to generate [y/N] ");
+						    "this image might take some time to"
+							"be generated [y/N] ");
 
 			if ((c = getchar()) != 'y' && c != 'Y') {
 				fprintf(stderr, "ok. exiting...\n");
@@ -258,8 +259,7 @@ void bmp_example2(FILE *img, basic_info base) {
 void bmp_example3(FILE *img, basic_info base) {
 
 	RGBpixel  yeganeh[YEGANEH_HEIGHT][YEGANEH_WIDTH];
-	hex_value padding[4] = {0, 0, 0, 0};
-	float     progress   = 0.0F;
+	int8_t     progress   = 0;
 
 	for (int n = 0; n < base.height; n++) {
 		for (int m = 0; m < base.width; m++) {
@@ -271,14 +271,19 @@ void bmp_example3(FILE *img, basic_info base) {
 			yeganeh[n][m][RGB_BLUE]  = F(H(2, x, y));
 		}
 
-		fwrite(yeganeh[n], sizeof(RGBpixel), base.width, img);
-		fwrite(padding, sizeof(padding), 1, img);
+		 if (fwrite(yeganeh[n], sizeof(RGBpixel), base.width, img)
+		 	!= base.width) {
+			fprintf(stderr,
+			"something went wrong while generating the image");
+			fclose(img);
+			exit(EXIT_FAILURE);
+		}
 		
 		if (n % (base.height / 100) == 0) {
-			progress += 0.1F;
+			progress += 1;
 
 			ERASE_LINE(stderr);
-			fprintf(stderr, "image %.1f%% done; ", progress);
+			fprintf(stderr, "image %d%% done", progress);
 		}
 	}
 

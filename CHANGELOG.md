@@ -59,3 +59,8 @@ Removed redundant comments in bitmap.h.
 
 In loop, treated m and n as doubles when calculating x and y (otherwise, they become 0). Resulting image composed of bands of red, green, and blue, of varying intensities, rightmost parts rendered on the left side, and some distortion. Previous attempts were the RGB bands forming a diagonal strip (like a "/") in a black background.   
 In function "L", changed 1442 to 142; In "Q", stored calls to "A" and "B" in variables; In "P", added a "1 +" in the 1st atan; In "R", changed "* 0.4" to "+ 0.4"; Replaced instances of exp(-exp(...)) with E_POW_NEG_E_POW; Any doubles initialized with literals such as 0 now have leading ".0"; Created some new variables to store repeated values
+
+## 0.3.5: Example 3 properly generated
+
+Unnecessary padding for each row, as BMP's require each row to start on addresses multiples of 4 (3 * 2100 is already a multiple of 4). By removing the 4 bytes padding, the issues mentioned above were fixed.
+Added a check when writing the rows.
